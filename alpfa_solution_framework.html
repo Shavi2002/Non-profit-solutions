@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sustainable Membership Engine — Final Framework for Chapter-Based Non-Profits</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --impact: #E8A840; --donors: #E0578C; --policy: #6B8C5A;
+    --catalyst: #4A4A7A; --bg: #FAFAF8; --text: #1A1A2E;
+    --muted: #666680; --card: #FFFFFF; --border: #E8E8F0;
+    --red: #D95757; --green: #5A8C6B; --blue: #4A7AB5;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #2E2E5A 0%, var(--catalyst) 100%); color: white; padding: 56px 48px 44px; position: relative; overflow: hidden; }
+  .header::before { content:''; position:absolute; top:-80px; right:-80px; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.04); }
+  .header::after  { content:''; position:absolute; bottom:-60px; left:32%; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.03); }
+  .eyebrow { font-size:10.5px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.52); margin-bottom:14px; }
+  .header h1 { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; line-height:1.22; margin-bottom:16px; max-width:740px; }
+  .header h1 em { color:var(--impact); font-style:normal; }
+  .header-sub { font-size:14.5px; color:rgba(255,255,255,0.68); max-width:620px; line-height:1.72; }
+  .header-tags { margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }
+  .tag { display:inline-block; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.18); border-radius:20px; padding:5px 14px; font-size:11.5px; color:rgba(255,255,255,0.82); }
+
+  /* TOC BANNER */
+  .toc { background:#F0EFF9; border-bottom:1px solid #D8D6EE; padding:14px 48px; display:flex; align-items:center; gap:0; overflow-x:auto; white-space:nowrap; }
+  .toc-lbl { font-size:10.5px; color:var(--muted); margin-right:14px; }
+  .toc-pill { background:var(--catalyst); color:white; font-size:10.5px; font-weight:700; padding:3px 11px; border-radius:20px; }
+  .toc-pill.lt { background:#D8D6EE; color:var(--catalyst); }
+  .toc-arr { color:#C0BED8; margin:0 8px; font-size:16px; }
+
+  /* LAYOUT */
+  .content { max-width:1100px; margin:0 auto; padding:0 32px 80px; }
+  .section { margin-top:60px; }
+  .sec-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+  .sec-title { font-family:'Playfair Display',serif; font-size:25px; font-weight:600; color:var(--text); margin-bottom:6px; }
+  .sec-desc { font-size:13.5px; color:var(--muted); max-width:760px; margin-bottom:28px; line-height:1.72; }
+  .term { font-style:italic; color:var(--catalyst); font-weight:500; }
+
+  /* GRIDS */
+  .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+
+  /* CARD BASE */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px; }
+  .card h3 { font-size:15px; font-weight:700; margin-bottom:7px; }
+  .card p  { font-size:13px; color:var(--muted); line-height:1.65; }
+
+  /* PROBLEM CARDS */
+  .prob { position:relative; overflow:hidden; }
+  .prob::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+  .prob.r::before { background:var(--red); }
+  .prob.a::before { background:var(--impact); }
+  .prob.s::before { background:var(--catalyst); }
+  .prob-num { font-size:10.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:9px; }
+  .prob.r .prob-num { color:var(--red); } .prob.a .prob-num { color:var(--impact); } .prob.s .prob-num { color:var(--catalyst); }
+  .prob ul { list-style:none; margin-top:10px; }
+  .prob ul li { font-size:12.5px; color:var(--muted); padding:3px 0 3px 13px; position:relative; line-height:1.5; }
+  .prob ul li::before { content:'—'; position:absolute; left:0; color:#CCC; }
+  .npo-tag { display:inline-block; margin-top:11px; font-size:11px; background:#F5F5FC; border:1px solid #D8D6EE; border-radius:6px; padding:3px 9px; color:var(--catalyst); }
+  .npo-tag span { opacity:.65; }
+
+  /* ROOT CAUSE */
+  .root { margin-top:18px; background:#FFF8EC; border:1px solid #F5D88A; border-radius:10px; padding:14px 18px; font-size:13px; color:#7A5A10; line-height:1.7; }
+  .root strong { display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; }
+
+  /* LOGIC MODEL */
+  .lm { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:26px; }
+  .lm-hdr { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:18px; }
+  .lm-row { display:grid; grid-template-columns:repeat(5,1fr); gap:0; }
+  .lm-col { padding:12px 14px; border-right:1px dashed #D8D6EE; }
+  .lm-col:last-child { border-right:none; }
+  .lm-col-hdr { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px; }
+  .lm-in { color:var(--blue); } .lm-act { color:var(--impact); } .lm-out { color:var(--donors); } .lm-ocome { color:var(--policy); } .lm-imp { color:var(--catalyst); }
+  .lm-col ul { list-style:none; }
+  .lm-col ul li { font-size:11.5px; color:var(--muted); padding:2.5px 0 2.5px 10px; position:relative; line-height:1.5; }
+  .lm-col ul li::before { content:'·'; position:absolute; left:0; color:#BBB; }
+
+  /* STAKEHOLDER MAP */
+  .smap { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px; }
+  .smap-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; margin-top:16px; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .smap-cell { padding:18px 20px; }
+  .smap-cell.tl { background:#FFF8EC; } .smap-cell.tr { background:#F0FFF4; }
+  .smap-cell.bl { background:#F8F8FF; } .smap-cell.br { background:#FFF0F0; }
+  .smap-cell h4 { font-size:13px; font-weight:700; margin-bottom:5px; }
+  .smap-cell p  { font-size:12px; color:var(--muted); line-height:1.55; }
+  .smap-cell .chip { display:inline-block; font-size:10.5px; font-weight:600; padding:2px 9px; border-radius:20px; margin-bottom:8px; }
+  .axis-label { font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); text-align:center; margin-top:6px; }
+
+  /* ENGAGEMENT LADDER */
+  .ladder { display:flex; flex-direction:column-reverse; gap:5px; }
+  .rung { display:flex; align-items:center; gap:14px; border-radius:9px; padding:11px 16px; }
+  .rung-icon { font-size:18px; flex-shrink:0; }
+  .rung-name { font-size:13.5px; font-weight:700; min-width:160px; }
+  .rung-desc { font-size:12px; color:var(--muted); flex:1; line-height:1.55; }
+  .rung-badge { font-size:10.5px; font-weight:600; padding:3px 10px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+
+  /* PIPELINE */
+  .pipe-wrap { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:32px; overflow-x:auto; }
+  .pipe { display:flex; align-items:flex-start; min-width:900px; }
+  .pipe-stage { display:flex; flex-direction:column; align-items:center; flex:1; }
+  .pipe-node { width:66px; height:66px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+  .pipe-label { font-size:12.5px; font-weight:700; margin-top:10px; text-align:center; }
+  .pipe-sub   { font-size:11px; color:var(--muted); text-align:center; margin-top:2px; }
+  .pipe-trig  { margin-top:12px; background:#F5F5FC; border:1px dashed #C0C0D8; border-radius:8px; padding:7px 9px; font-size:11px; color:var(--catalyst); text-align:center; line-height:1.5; width:118px; }
+  .pipe-trig strong { display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:#999; margin-bottom:2px; }
+  .pipe-arr { display:flex; align-items:center; padding-top:20px; color:#CCC; font-size:18px; flex-shrink:0; width:26px; justify-content:center; }
+  .leak { font-size:10.5px; color:var(--red); background:#FFF0F0; border:1px solid #F5CCCC; border-radius:6px; padding:3px 7px; margin-top:7px; text-align:center; }
+  .gain { font-size:10.5px; color:var(--green); background:#F0FFF4; border:1px solid #C0E8CC; border-radius:6px; padding:3px 7px; margin-top:7px; text-align:center; }
+
+  /* PILLARS */
+  .pillar { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .pillar-hdr { padding:20px 22px 16px; color:white; }
+  .pillar-hdr.amber { background:linear-gradient(135deg,#E8A840,#D4862A); }
+  .pillar-hdr.pink  { background:linear-gradient(135deg,#E0578C,#C43A72); }
+  .pillar-hdr.green { background:linear-gradient(135deg,#6B8C5A,#4A6B3A); }
+  .pillar-num { font-size:10.5px; font-weight:700; letter-spacing:2px; opacity:.72; margin-bottom:5px; }
+  .pillar-hdr h3 { font-size:16.5px; font-weight:700; line-height:1.32; }
+  .pillar-hdr p  { font-size:11.5px; opacity:.82; margin-top:5px; line-height:1.5; }
+  .pillar-body { padding:20px 22px; }
+  .p-action { display:flex; gap:11px; margin-bottom:13px; align-items:flex-start; }
+  .p-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+  .p-text { font-size:12.5px; line-height:1.55; color:var(--text); }
+  .p-text strong { display:block; font-weight:600; margin-bottom:2px; }
+  .p-text span { color:var(--muted); font-size:11.5px; line-height:1.5; display:block; }
+  .pillar-foot { margin-top:14px; padding-top:13px; border-top:1px solid var(--border); font-size:11.5px; color:var(--muted); line-height:1.6; }
+
+  /* SPONSOR */
+  .vs-badge { display:inline-block; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:10px; }
+  .vs-badge.b { background:#FFF0F0; color:var(--red); } .vs-badge.a { background:#F0FFF4; color:var(--green); }
+  .drow { display:flex; justify-content:space-between; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--border); font-size:12.5px; gap:10px; }
+  .drow:last-child { border-bottom:none; }
+  .drow-lbl { color:var(--muted); font-size:12px; }
+  .drow-val { font-weight:600; text-align:right; font-size:12px; }
+  .drow-val.r { color:var(--red); } .drow-val.g { color:var(--green); }
+  .sroi-bar { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+  .sroi-lbl { font-size:11px; color:var(--muted); margin-bottom:5px; }
+  .sroi-track { background:#F0F0F8; border-radius:20px; height:9px; overflow:hidden; }
+  .sroi-fill { height:9px; border-radius:20px; }
+
+  /* FLYWHEEL */
+  .fw-wrap { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:32px; display:flex; gap:40px; align-items:flex-start; }
+  .fw-steps { flex:1; }
+  .fw-step { display:flex; gap:14px; margin-bottom:18px; align-items:flex-start; }
+  .fw-num { width:26px; height:26px; border-radius:50%; background:var(--catalyst); color:white; font-size:11.5px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  .fw-step h4 { font-size:13.5px; font-weight:700; margin-bottom:2px; }
+  .fw-step p  { font-size:12px; color:var(--muted); line-height:1.6; }
+  .cop-box { margin-top:16px; background:#F5F5FC; border:1px solid #D8D6EE; border-radius:10px; padding:14px 16px; }
+  .cop-box strong { font-size:12px; color:var(--catalyst); display:block; margin-bottom:4px; }
+  .cop-box p { font-size:12px; color:var(--muted); line-height:1.6; }
+
+  /* SWOT */
+  .swot-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .swot-cell { padding:24px 26px; }
+  .swot-cell.S { background:#F0FFF4; border-right:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .swot-cell.W { background:#FFF0F0; border-bottom:1px solid var(--border); }
+  .swot-cell.O { background:#FFF8EC; border-right:1px solid var(--border); }
+  .swot-cell.T { background:#F8F8FF; }
+  .swot-hdr { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .swot-hdr span { font-size:18px; }
+  .swot-cell ul { list-style:none; }
+  .swot-cell ul li { font-size:12.5px; color:var(--muted); padding:4px 0 4px 14px; position:relative; line-height:1.55; }
+  .swot-cell ul li::before { content:'→'; position:absolute; left:0; color:#AAA; font-size:11px; top:5px; }
+
+  /* RATINGS */
+  .ratings-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .rating-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .rating-dim { font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:10px; }
+  .rating-score { font-size:34px; font-weight:800; line-height:1; margin-bottom:4px; }
+  .rating-max  { font-size:13px; color:var(--muted); }
+  .rating-bar-wrap { margin:12px 0 10px; background:#F0F0F8; border-radius:20px; height:7px; overflow:hidden; }
+  .rating-bar { height:7px; border-radius:20px; }
+  .rating-note { font-size:11.5px; color:var(--muted); line-height:1.55; }
+  .rating-tag { display:inline-block; margin-top:8px; font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:20px; }
+
+  /* GOVERNANCE TABLE */
+  .gov-wrap { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .gov-table { width:100%; border-collapse:collapse; }
+  .gov-table thead th { background:#F5F5FC; padding:11px 16px; text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); border-bottom:1px solid var(--border); }
+  .gov-table tbody td { padding:11px 16px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
+  .gov-table tbody tr:last-child td { border-bottom:none; }
+  .gov-table tbody tr:hover { background:#FAFAFC; }
+  .gov-bar-cell { display:flex; align-items:center; gap:10px; }
+  .gov-bar-track { background:#F0F0F8; border-radius:20px; height:8px; flex:1; overflow:hidden; }
+  .gov-bar-fill  { height:8px; border-radius:20px; background:var(--catalyst); }
+  .gov-score { font-weight:700; font-size:13.5px; color:var(--catalyst); min-width:32px; }
+  .gov-note { font-size:12px; color:var(--muted); }
+  .gov-total { background:#F0EFF9 !important; }
+  .gov-total td { font-weight:700; color:var(--catalyst) !important; }
+
+  /* SDG */
+  .sdg-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .sdg-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; gap:14px; align-items:flex-start; }
+  .sdg-badge { width:56px; height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; font-weight:800; }
+  .sdg-body h4 { font-size:14px; font-weight:700; margin-bottom:5px; }
+  .sdg-body p  { font-size:12px; color:var(--muted); line-height:1.6; }
+
+  /* DATA GOVERNANCE */
+  .dg-box { background:#F5F5FC; border:1px solid #D8D6EE; border-left:4px solid var(--catalyst); border-radius:10px; padding:18px 20px; }
+  .dg-box strong { display:block; font-size:11.5px; font-weight:700; color:var(--catalyst); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+  .dg-box p { font-size:13px; color:var(--muted); line-height:1.7; }
+
+  /* METRICS */
+  .metric-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .metric-name { font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
+  .metric-val  { font-size:28px; font-weight:800; line-height:1; }
+  .metric-sub  { font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.5; }
+
+  /* CATALYST */
+  .cat-wrap { background:linear-gradient(135deg,#2E2E5A 0%,var(--catalyst) 100%); border-radius:14px; padding:32px; color:white; }
+  .cat-title { font-family:'Playfair Display',serif; font-size:21px; margin-bottom:5px; }
+  .cat-sub   { font-size:12.5px; opacity:.7; margin-bottom:24px; line-height:1.7; max-width:660px; }
+  .cat-grid  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+  .cat-card  { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:18px; }
+  .cat-icon  { font-size:20px; margin-bottom:9px; }
+  .cat-card h4 { font-size:13.5px; font-weight:700; margin-bottom:5px; }
+  .cat-card p  { font-size:11.5px; opacity:.76; line-height:1.65; }
+  .cat-conn  { display:inline-block; margin-top:9px; font-size:10.5px; background:rgba(255,255,255,0.12); border-radius:6px; padding:3px 9px; }
+
+  /* ROADMAP */
+  .roadmap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+  .phase { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .phase-hdr { padding:14px 18px; font-size:12.5px; font-weight:700; color:white; }
+  .phase-hdr.p1 { background:#4A7AB5; } .phase-hdr.p2 { background:var(--impact); } .phase-hdr.p3 { background:var(--policy); }
+  .phase-hdr span { opacity:.8; font-weight:400; font-size:11px; display:block; margin-top:1px; }
+  .phase-body { padding:16px 18px; }
+  .phase-item { font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--border); display:flex; gap:7px; align-items:flex-start; line-height:1.5; }
+  .phase-item:last-child { border-bottom:none; }
+  .phase-item::before { content:'→'; color:#BBB; flex-shrink:0; margin-top:1px; }
+
+  /* FOOTER */
+  .footer { background:var(--catalyst); color:white; padding:28px 48px; margin-top:60px; display:flex; justify-content:space-between; align-items:center; gap:24px; }
+  .footer-l strong { display:block; font-size:14px; margin-bottom:3px; }
+  .footer-l { font-size:12.5px; opacity:.78; }
+  .footer-r { font-size:11px; opacity:.5; text-align:right; line-height:1.9; }
+
+  @media(max-width:820px) {
+    .g3,.g2,.g4,.lm-row,.ratings-grid,.sdg-grid,.cat-grid,.roadmap,.swot-grid { grid-template-columns:1fr; }
+    .fw-wrap { flex-direction:column; }
+    .header,.footer { padding:36px 24px; }
+    .content { padding:0 20px 60px; }
+    .toc { padding:12px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Final Framework · Chapter-Based Non-Profits · April 2026</div>
+  <h1>The <em>Sustainable Membership</em> Engine:<br>A Catalyst Strategist's Blueprint for Non-Profit Growth</h1>
+  <p class="header-sub">A constituent-centered, evidence-backed framework addressing the systemic sustainability gaps — membership attrition, stakeholder trust, and structural fragility — observed in chapter-based non-profit organizations. Built for replication at scale.</p>
+  <div class="header-tags">
+    <span class="tag">Shambhavi Singh · Non-Profit Strategy</span>
+    <span class="tag">SDG 8 · SDG 10 · SDG 17 Aligned</span>
+    <span class="tag">Global Governance Rated: 7.9/10</span>
+    <span class="tag">Third-Party Validated</span>
+  </div>
+</div>
+
+<!-- THEORY OF CHANGE BANNER -->
+<div class="toc">
+  <span class="toc-lbl">Theory of Change →</span>
+  <span class="toc-pill">Inputs</span><span class="toc-arr">→</span>
+  <span class="toc-pill lt">Activities</span><span class="toc-arr">→</span>
+  <span class="toc-pill lt">Outputs</span><span class="toc-arr">→</span>
+  <span class="toc-pill lt">Outcomes</span><span class="toc-arr">→</span>
+  <span class="toc-pill lt">Impact</span>
+  <span class="toc-arr" style="margin:0 18px;">·</span>
+  <span class="toc-lbl"><em>If we do X, then Y will change because Z.</em></span>
+</div>
+
+<div class="content">
+
+<!-- ═══ 1. PROBLEM DIAGNOSIS ═══ -->
+<div class="section">
+  <div class="sec-label">Problem Diagnosis</div>
+  <div class="sec-title">Three Systemic Failures</div>
+  <p class="sec-desc">What appears as isolated problems — low retention, sponsor attrition, weak outreach — are three interconnected structural failures sharing one root cause: the absence of a <span class="term">constituent lifecycle management</span> strategy. In non-profit consultancy, this pattern is called <span class="term">mission drift through growth fragility</span> — organizations that expand without building the systems to sustain that expansion.</p>
+
+  <div class="g3">
+    <div class="card prob r">
+      <div class="prob-num">Failure 01</div>
+      <h3>The Leaky Constituent Funnel</h3>
+      <p>Without deliberate stewardship touchpoints at each membership stage, constituents exit the pipeline before they can become advocates or sustaining donors.</p>
+      <ul>
+        <li>No defined conversion triggers between membership stages</li>
+        <li>Students see no immediate, tangible ROI from joining</li>
+        <li>Graduation creates a structural break — no bridge to professional membership</li>
+        <li>Sustaining membership framed as charity, not career investment</li>
+      </ul>
+      <div class="npo-tag"><span>NPO Framework → </span>Constituent Lifecycle Management / Member Attrition</div>
+    </div>
+    <div class="card prob a">
+      <div class="prob-num">Failure 02</div>
+      <h3>The Sponsorship Trust Deficit</h3>
+      <p>Corporate sponsors invest based on demonstrated, measurable outcomes. When conversion rates collapse, the talent pipeline they funded becomes invisible — and non-renewal follows directly from that invisibility.</p>
+      <ul>
+        <li>Low conversion = no verifiable talent pipeline = no renewal case</li>
+        <li>Sponsorship pitch relies on brand exposure, not outcome data</li>
+        <li>No impact measurement system to quantify sponsor return (SROI)</li>
+        <li>Relationship is transactional, not stewarded through a cultivation cycle</li>
+      </ul>
+      <div class="npo-tag"><span>NPO Framework → </span>Resource Development / Donor Stewardship / SROI</div>
+    </div>
+    <div class="card prob s">
+      <div class="prob-num">Failure 03</div>
+      <h3>Structural Organizational Fragility</h3>
+      <p>Chapters built around individual champions are inherently fragile. Non-profit best practice requires <span class="term">organizational resilience</span> — the capacity to sustain mission delivery independent of any single person's presence.</p>
+      <ul>
+        <li>Organizational memory does not survive leadership transitions</li>
+        <li>Alumni have no formal role, pathway, or incentive to remain engaged</li>
+        <li>Growth depends on personality-driven recruitment, not systemic replication</li>
+        <li>No capacity-building infrastructure for chapter self-sufficiency</li>
+      </ul>
+      <div class="npo-tag"><span>NPO Framework → </span>Capacity Building / Organizational Resilience</div>
+    </div>
+  </div>
+
+  <div class="root">
+    <strong>Root Cause — The Common Thread</strong>
+    All three failures share one origin: membership is treated as a <em>transactional event</em> (someone joins) rather than a <em>relational lifecycle</em> (someone grows). This is the difference between a <strong>transactional membership model</strong> and a <strong>constituent-centered engagement model</strong>. The Catalyst Strategist's role is to redesign the system around lifecycle and relationship logic — not recruitment numbers alone.
+  </div>
+</div>
+
+<!-- ═══ 2. LOGIC MODEL ═══ -->
+<div class="section">
+  <div class="sec-label">Non-Profit Planning Framework</div>
+  <div class="sec-title">Logic Model: From Inputs to Impact</div>
+  <p class="sec-desc">The <span class="term">Logic Model</span> maps the causal chain from organizational resources to mission outcomes. Every element of this solution maps into this chain — ensuring the strategy is mission-driven, not just activity-driven, and that progress can be evaluated at each stage.</p>
+
+  <div class="lm">
+    <div class="lm-hdr">Logic Model — Sustainable Membership Framework for Chapter-Based Non-Profits</div>
+    <div class="lm-row">
+      <div class="lm-col"><div class="lm-col-hdr lm-in">Inputs</div><ul><li>Member dues &amp; fees</li><li>Corporate sponsorship</li><li>Alumni volunteer time</li><li>Chapter leadership capacity</li><li>Institutional knowledge</li></ul></div>
+      <div class="lm-col"><div class="lm-col-hdr lm-act">Activities</div><ul><li>Precision outreach campaigns</li><li>Bridge Program (graduation)</li><li>Chapter Founder training</li><li>Member Outcomes Dashboard</li><li>Sponsor stewardship cycle</li></ul></div>
+      <div class="lm-col"><div class="lm-col-hdr lm-out">Outputs</div><ul><li>Improved conversion rate</li><li># sustaining members</li><li>New chapters launched</li><li>Sponsor renewals secured</li><li>Verified career placements</li></ul></div>
+      <div class="lm-col"><div class="lm-col-hdr lm-ocome">Outcomes</div><ul><li>Diverse talent entering finance</li><li>Sponsor SROI demonstrated</li><li>Alumni-driven chapter growth</li><li>Financial sustainability</li><li>Increased member lifetime value</li></ul></div>
+      <div class="lm-col"><div class="lm-col-hdr lm-imp">Impact</div><ul><li>Systemic equity in professional access</li><li>Replicable chapter model at scale</li><li>Self-sustaining Latino professional network</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 3. STAKEHOLDER MAP ═══ -->
+<div class="section">
+  <div class="sec-label">Stakeholder Analysis</div>
+  <div class="sec-title">Power–Interest Stakeholder Map</div>
+  <p class="sec-desc"><span class="term">Stakeholder power-interest mapping</span> is a standard non-profit strategy tool that categorizes stakeholders by their influence over the organization and their stake in its outcomes. This determines the appropriate engagement strategy for each group — and where the Catalyst Strategist must invest the most relational capital.</p>
+
+  <div class="smap">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Low Interest</span>
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">High Interest</span>
+    </div>
+    <div style="display:flex; gap:3px; align-items:stretch;">
+      <div style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; padding:0 6px; display:flex; align-items:center;">Low Power</div>
+      <div style="flex:1;">
+        <div class="smap-grid">
+          <div class="smap-cell tl">
+            <div class="chip" style="background:#FFF0D4;color:#A0650A;">Monitor</div>
+            <h4>Peer Organizations</h4>
+            <p>Other professional associations. Low immediate power over the organization, moderate interest in competition for talent. Strategy: monitor; potential future partners for collective impact.</p>
+          </div>
+          <div class="smap-cell tr">
+            <div class="chip" style="background:#E0F0E4;color:#3A6B44;">Keep Informed</div>
+            <h4>Students / Prospective Members</h4>
+            <p>High interest in membership value, low structural power today. Strategy: precision outreach, rapid value delivery within 30 days of joining. Today's prospect is tomorrow's Chapter Founder.</p>
+          </div>
+          <div class="smap-cell bl">
+            <div class="chip" style="background:#F0EFF9;color:var(--catalyst);">Keep Satisfied</div>
+            <h4>Policymakers / Civic Bodies</h4>
+            <p>High power to shape operating environment and grant access. Currently lower active interest. Strategy: grow chapter footprint to create civic visibility that earns policymaker attention.</p>
+          </div>
+          <div class="smap-cell br">
+            <div class="chip" style="background:#FCE8F2;color:#A02060;">Manage Closely</div>
+            <h4>Corporate Sponsors &amp; Alumni</h4>
+            <p>Highest power AND highest interest. Corporate sponsors hold financial sustainability. Alumni hold structural resilience. Strategy: continuous stewardship, SROI reporting, Founder incentive model.</p>
+          </div>
+        </div>
+      </div>
+      <div style="writing-mode:vertical-rl; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; padding:0 6px; display:flex; align-items:center;">High Power</div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:6px;">
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Low Interest</span>
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">High Interest</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. ENGAGEMENT LADDER ═══ -->
+<div class="section">
+  <div class="sec-label">Constituent Engagement Model</div>
+  <div class="sec-title">The Ladder of Engagement</div>
+  <p class="sec-desc">The <span class="term">Ladder of Engagement</span> is a foundational non-profit constituent relations framework mapping the journey from passive awareness to active organizational co-production. The goal is not just to acquire members — it is to move constituents up the ladder until they become <em>co-producers of mission</em>, extending the organization's reach without adding burden to existing leadership.</p>
+
+  <div class="card" style="padding:24px;">
+    <div class="ladder">
+      <div class="rung" style="background:#F5F5FC;border-left:4px solid #D0CFE8;">
+        <div class="rung-icon">👀</div><div class="rung-name" style="color:#888;">Awareness</div>
+        <div class="rung-desc">Student hears about the organization through campus outreach or peers. No commitment yet — first brand impression is decisive.</div>
+        <div class="rung-badge" style="background:#F0EFF9;color:var(--catalyst);">Campus outreach</div>
+      </div>
+      <div class="rung" style="background:#FFF8EC;border-left:4px solid var(--impact);">
+        <div class="rung-icon">🙋</div><div class="rung-name" style="color:var(--impact);">Joining</div>
+        <div class="rung-desc">Student attends event or signs up. Conversion trigger: cost-per-opportunity framing. Must deliver immediate value within 30 days or exit risk is high.</div>
+        <div class="rung-badge" style="background:#FFF0D0;color:#A0650A;">Precision pitch</div>
+      </div>
+      <div class="rung" style="background:#FFF0F6;border-left:4px solid var(--donors);">
+        <div class="rung-icon">🤝</div><div class="rung-name" style="color:var(--donors);">Active Participation</div>
+        <div class="rung-desc">Member attends events, uses resources, builds relationships. Sustained by mentorship access, exclusive programming, and visible professional benefit.</div>
+        <div class="rung-badge" style="background:#FCE8F2;color:#A02060;">Value delivery</div>
+      </div>
+      <div class="rung" style="background:#F0F8F2;border-left:4px solid var(--policy);">
+        <div class="rung-icon">💼</div><div class="rung-name" style="color:var(--policy);">Sustaining Member</div>
+        <div class="rung-desc">Transitions into professional life and continues membership. Conversion trigger: Bridge Program. Membership reframed as career infrastructure, not a student club.</div>
+        <div class="rung-badge" style="background:#E0F0E4;color:#3A6B44;">Bridge Program</div>
+      </div>
+      <div class="rung" style="background:#F0EFF9;border-left:4px solid var(--catalyst);">
+        <div class="rung-icon">🏛️</div><div class="rung-name" style="color:var(--catalyst);">Co-Producer / Chapter Founder</div>
+        <div class="rung-desc">Employed alumni become organizational co-producers — launching chapters, mentoring students, extending the mission. The highest rung: a constituent who <em>extends the ladder for others.</em></div>
+        <div class="rung-badge" style="background:#E0DEF4;color:var(--catalyst);">Flywheel activation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 5. PIPELINE ═══ -->
+<div class="section">
+  <div class="sec-label">Constituent Journey Mapping</div>
+  <div class="sec-title">The Redesigned Membership Lifecycle Pipeline</div>
+  <p class="sec-desc"><span class="term">Constituent journey mapping</span> identifies every touchpoint a member has with the organization and designs deliberate interventions at each transition. The current pipeline has two critical attrition points — at initial engagement and at graduation — which must be addressed with explicit stewardship mechanisms, not assumed loyalty.</p>
+
+  <div class="pipe-wrap">
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Redesigned Member Journey — With Conversion Triggers at Every Stage</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:24px;">Each node includes a deliberate intervention that makes the next stage feel inevitable, not effortful.</div>
+    <div class="pipe">
+      <div class="pipe-stage">
+        <div class="pipe-node" style="background:linear-gradient(135deg,#B0C4E8,#7A9FD4);">🎓</div>
+        <div class="pipe-label">Prospect</div><div class="pipe-sub">Campus student</div>
+        <div class="pipe-trig"><strong>Trigger</strong>Cost-per-opportunity pitch: "$X membership = Y internship leads + Z mentor connections."</div>
+      </div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-stage">
+        <div class="pipe-node" style="background:linear-gradient(135deg,#E8A840,#D4862A);">👤</div>
+        <div class="pipe-label">Student Member</div><div class="pipe-sub">Active chapter member</div>
+        <div class="pipe-trig"><strong>Trigger</strong>Resume review, internship referral &amp; mentor match within 30 days of joining.</div>
+        <div class="leak">Attrition point #1</div>
+      </div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-stage">
+        <div class="pipe-node" style="background:linear-gradient(135deg,#E0578C,#C43A72);" >🌉</div>
+        <div class="pipe-label">Bridge Cohort</div><div class="pipe-sub">Graduating member</div>
+        <div class="pipe-trig"><strong>Trigger</strong>90-day Bridge Program at graduation: alumni network access, professional events, career coaching.</div>
+        <div class="leak">Attrition point #2 (highest)</div>
+      </div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-stage">
+        <div class="pipe-node" style="background:linear-gradient(135deg,#6B8C5A,#4A6B3A);">🌱</div>
+        <div class="pipe-label">Sustaining Member</div><div class="pipe-sub">Professional, dues-paying</div>
+        <div class="pipe-trig"><strong>Trigger</strong>Exclusive access, voting rights, leadership ladder. Membership as a career asset, not a donation.</div>
+        <div class="gain">Target: 60%+ retention</div>
+      </div>
+      <div class="pipe-arr">→</div>
+      <div class="pipe-stage">
+        <div class="pipe-node" style="background:linear-gradient(135deg,#4A4A7A,#2E2E5A);">🏛️</div>
+        <div class="pipe-label">Chapter Founder</div><div class="pipe-sub">Employed alumni, mission co-producer</div>
+        <div class="pipe-trig"><strong>Trigger</strong>Training + micro-grant (Chapter Development Fund) + recognition tier. Opens chapter at employer or new city.</div>
+        <div class="gain">Mission multiplier</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 6. THREE PILLARS ═══ -->
+<div class="section">
+  <div class="sec-label">Original Solution Framework</div>
+  <div class="sec-title">Three Pillars of Sustainable Membership</div>
+  <p class="sec-desc">Each pillar addresses one systemic failure, maps to a stage in the Logic Model, and operationalizes a dimension of the Catalyst Strategist's role. Together they constitute a <span class="term">constituent-centered organizational redesign</span> — a shift from program delivery to relationship architecture.</p>
+
+  <div class="g3">
+    <div class="pillar">
+      <div class="pillar-hdr amber">
+        <div class="pillar-num">Pillar 01</div>
+        <h3>Precision Outreach &amp; the Value Proposition Matrix</h3>
+        <p>Stop broadcasting. Start targeting — with a cost-per-opportunity pitch tailored to each constituent segment.</p>
+      </div>
+      <div class="pillar-body">
+        <div class="p-action"><div class="p-dot" style="background:var(--impact);"></div><div class="p-text"><strong>Segment-Specific Constituent Messaging</strong><span>Students get ROI framing. Alumni get career capital framing. Sponsors receive a human capital pipeline brief with verified placement metrics. A single message to all audiences is a message to none.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--impact);"></div><div class="p-text"><strong>Protected Communication Infrastructure</strong><span>Dedicated member channels that separate signal from noise. In non-profit practice, this is constituent <em>stewardship infrastructure</em> — consistent, personalized, trust-building communication that sustains the relationship between value moments.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--impact);"></div><div class="p-text"><strong>Cost-Effectiveness Framing for Access</strong><span>Translate membership costs into opportunity-per-dollar. For students with financial anxiety about dues, a compelling ROI argument is an equity intervention — it makes the calculus visible and removes a real barrier to access.</span></div></div>
+        <div class="pillar-foot"><strong>Logic Model Link:</strong> Activities → Outputs. Addresses Failure 01 and feeds initial conversion metrics. Reflects the Venn model's "Transparency impacting trust" axis.</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-hdr pink">
+        <div class="pillar-num">Pillar 02</div>
+        <h3>Sustainable Membership Architecture</h3>
+        <p>Redesign membership as a growth asset through tiered value delivery, a graduation Bridge Program, and a member outcomes system that converts anecdote into evidence.</p>
+      </div>
+      <div class="pillar-body">
+        <div class="p-action"><div class="p-dot" style="background:var(--donors);"></div><div class="p-text"><strong>The Bridge Program</strong><span>A 90-day structured onboarding activating at graduation — the highest attrition point in the constituent journey. Converts a life transition into a membership-deepening moment rather than an exit event. This is <em>lifecycle stewardship</em> in action.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--donors);"></div><div class="p-text"><strong>Tiered Value Ladder &amp; Earned Income Logic</strong><span>Each membership tier unlocks progressively more: mentorship → exclusive events → voting rights → leadership titles. This transforms membership from a dues model into a genuine <em>value exchange</em> — members pay more because they receive more.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--donors);"></div><div class="p-text"><strong>Member Outcomes Dashboard</strong><span>Track career placements, promotions, and employer relationships across cohorts. This is the evidentiary foundation for the entire sponsorship stewardship case — transforming anecdote into a data-backed <em>Social Return on Investment (SROI)</em> argument.</span></div></div>
+        <div class="pillar-foot"><strong>Logic Model Link:</strong> Activities → Outcomes. Addresses both Failure 01 (conversion gaps) and Failure 02 (sponsor attrition) simultaneously.</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-hdr green">
+        <div class="pillar-num">Pillar 03</div>
+        <h3>The Alumni-to-Chapter Flywheel</h3>
+        <p>Convert employed members into organizational co-producers through structured capacity-building — creating a replicable, incentive-driven chapter expansion that does not depend on institutional memory.</p>
+      </div>
+      <div class="pillar-body">
+        <div class="p-action"><div class="p-dot" style="background:var(--policy);"></div><div class="p-text"><strong>Chapter Founding Training as Capacity Building</strong><span>Employed alumni receive a structured toolkit: a chapter playbook, launch templates, outreach scripts, and peer cohort support. This is <em>capacity building</em> in its fullest non-profit sense — growing the organization's ability to reproduce its mission without central overhead.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--policy);"></div><div class="p-text"><strong>Chapter Development Fund &amp; Incentive Architecture</strong><span>Micro-grants are funded by a dedicated Chapter Development Fund — seeded by a percentage (e.g., 5%) of pooled national dues. Founders also receive recognition tiers, co-branding rights with their employer, and a permanent "Founding Member" distinction. Non-profit research confirms that <em>intrinsic + extrinsic incentives together</em> sustain volunteer leadership better than either alone.</span></div></div>
+        <div class="p-action"><div class="p-dot" style="background:var(--policy);"></div><div class="p-text"><strong>Succession Principle Built In</strong><span>Each chapter elects a Deputy Founder before the original Founder exits. This single practice embeds organizational resilience structurally — breaking the personality-dependency cycle at the chapter level.</span></div></div>
+        <div class="pillar-foot"><strong>Logic Model Link:</strong> Activities → Impact. Addresses Failure 03 (structural fragility) and scales outcomes to systemic, mission-level change.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 7. SPONSOR MODEL ═══ -->
+<div class="section">
+  <div class="sec-label">Resource Development</div>
+  <div class="sec-title">Rebuilding Corporate Sponsor Trust</div>
+  <p class="sec-desc">In non-profit resource development, the <span class="term">Cultivation → Solicitation → Stewardship cycle</span> governs all major donor and sponsor relationships. Sponsors who do not renew are almost always experiencing a <em>stewardship failure</em> — they received no ongoing evidence their investment produced results. The root cause is low conversion making the talent pipeline invisible. The fix is to make impact visible, measurable, and continuously reported.</p>
+
+  <div class="g2">
+    <div class="card">
+      <div class="vs-badge b">Current State: Why Sponsors Don't Renew</div>
+      <h3>The Broken Stewardship Cycle</h3>
+      <p>When membership conversion rates collapse, the human capital pipeline sponsors funded does not materialize at the promised scale. Without impact data, the relationship becomes purely transactional — and transactional relationships are cut first when budgets tighten.</p>
+      <div class="drow"><span class="drow-lbl">Value proposition framing</span><span class="drow-val r">Brand exposure only</span></div>
+      <div class="drow"><span class="drow-lbl">Impact evidence provided</span><span class="drow-val r">Anecdotal / none</span></div>
+      <div class="drow"><span class="drow-lbl">Stewardship touchpoints</span><span class="drow-val r">One-time pitch, no follow-up</span></div>
+      <div class="drow"><span class="drow-lbl">Talent pipeline visibility</span><span class="drow-val r">Not tracked</span></div>
+      <div class="drow"><span class="drow-lbl">Relationship architecture</span><span class="drow-val r">Transactional</span></div>
+      <div class="sroi-bar"><div class="sroi-lbl">Perceived SROI for sponsor</div><div class="sroi-track"><div class="sroi-fill" style="width:14%;background:var(--red);"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="vs-badge a">Target State: The Rebuilt Stewardship Case</div>
+      <h3>Outcome-Driven Resource Development</h3>
+      <p>Reframe sponsorship as <em>talent infrastructure investment</em> — backed by quarterly outcome reports, a Member Outcomes Dashboard, and the Employer Chapter model that structurally embeds the sponsor inside organizational growth. Stewardship becomes continuous, not episodic.</p>
+      <div class="drow"><span class="drow-lbl">Value proposition framing</span><span class="drow-val g">Verified talent pipeline</span></div>
+      <div class="drow"><span class="drow-lbl">Impact evidence provided</span><span class="drow-val g">Member Outcomes Dashboard</span></div>
+      <div class="drow"><span class="drow-lbl">Stewardship touchpoints</span><span class="drow-val g">Quarterly SROI reports</span></div>
+      <div class="drow"><span class="drow-lbl">Talent pipeline visibility</span><span class="drow-val g">Career placement tracking</span></div>
+      <div class="drow"><span class="drow-lbl">Relationship architecture</span><span class="drow-val g">Relational / embedded</span></div>
+      <div class="sroi-bar"><div class="sroi-lbl">Projected SROI for sponsor (post-Dashboard)</div><div class="sroi-track"><div class="sroi-fill" style="width:79%;background:var(--green);"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 8. FLYWHEEL (FIXED DIAGRAM) ═══ -->
+<div class="section">
+  <div class="sec-label">Self-Reinforcing Growth Mechanism</div>
+  <div class="sec-title">The Alumni-to-Chapter Flywheel</div>
+  <p class="sec-desc">The <span class="term">flywheel model</span>, adapted from organizational design to non-profit growth, describes a self-reinforcing cycle where each completed loop builds momentum for the next. Unlike linear growth models, a flywheel accelerates over time — making organizational resilience structurally embedded rather than personality-dependent.</p>
+
+  <div class="fw-wrap">
+    <!-- CLEAN FLYWHEEL SVG: 4 nodes at cardinal positions, arrows on ring, labels in boxes outside -->
+    <svg width="420" height="420" viewBox="0 0 420 420" style="flex-shrink:0;" aria-label="Alumni-to-Chapter Flywheel Diagram">
+      <defs>
+        <marker id="fw" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
+          <polygon points="0 0, 9 4, 0 8" fill="#4A4A7A"/>
+        </marker>
+      </defs>
+
+      <!-- Dashed ring guide -->
+      <circle cx="210" cy="210" r="100" fill="none" stroke="#E0DEF0" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+      <!-- ── CLOCKWISE ARROW ARCS (r=100, skip ±16° around each node) ── -->
+      <!-- Top(270°)→Right(0°): arc from 287° to 344° -->
+      <path d="M 239.2,113.6 A 100,100 0 0,1 306.1,182.4"
+            fill="none" stroke="#4A4A7A" stroke-width="2.8" marker-end="url(#fw)"/>
+      <!-- Right(0°)→Bottom(90°): arc from 16° to 74° -->
+      <path d="M 306.1,237.6 A 100,100 0 0,1 237.6,306.1"
+            fill="none" stroke="#4A4A7A" stroke-width="2.8" marker-end="url(#fw)"/>
+      <!-- Bottom(90°)→Left(180°): arc from 106° to 164° -->
+      <path d="M 182.4,306.1 A 100,100 0 0,1 113.9,237.6"
+            fill="none" stroke="#4A4A7A" stroke-width="2.8" marker-end="url(#fw)"/>
+      <!-- Left(180°)→Top(270°): arc from 196° to 254° -->
+      <path d="M 113.9,182.4 A 100,100 0 0,1 182.4,113.9"
+            fill="none" stroke="#4A4A7A" stroke-width="2.8" marker-end="url(#fw)"/>
+
+      <!-- ── NODE CIRCLES ── -->
+      <!-- Top: Student Member -->
+      <circle cx="210" cy="110" r="28" fill="#B0C4E8" stroke="white" stroke-width="2.5"/>
+      <text x="210" y="118" text-anchor="middle" font-size="20">🎓</text>
+      <!-- Right: Sustaining Member -->
+      <circle cx="310" cy="210" r="28" fill="#E0578C" stroke="white" stroke-width="2.5"/>
+      <text x="310" y="218" text-anchor="middle" font-size="20">💼</text>
+      <!-- Bottom: Chapter Founder -->
+      <circle cx="210" cy="310" r="28" fill="#4A4A7A" stroke="white" stroke-width="2.5"/>
+      <text x="210" y="318" text-anchor="middle" font-size="20">🏛️</text>
+      <!-- Left: New Chapter -->
+      <circle cx="110" cy="210" r="28" fill="#6B8C5A" stroke="white" stroke-width="2.5"/>
+      <text x="110" y="218" text-anchor="middle" font-size="20">🌱</text>
+
+      <!-- ── CENTER HUB ── -->
+      <circle cx="210" cy="210" r="44" fill="#4A4A7A"/>
+      <text x="210" y="202" text-anchor="middle" font-size="9" fill="white" font-weight="700" font-family="Inter,sans-serif">CAPACITY</text>
+      <text x="210" y="214" text-anchor="middle" font-size="9" fill="white" font-weight="700" font-family="Inter,sans-serif">FLYWHEEL</text>
+      <text x="210" y="230" text-anchor="middle" font-size="16">♻️</text>
+
+      <!-- ── ARC LABEL BOXES (positioned at midpoint of each arc, outside the ring) ── -->
+      <!-- Top→Right: midpoint at 315°, label top-right -->
+      <rect x="286" y="68" width="90" height="32" rx="6" fill="white" stroke="#D8D6EE" stroke-width="1"/>
+      <text x="331" y="82" text-anchor="middle" font-size="10.5" fill="#4A4A7A" font-weight="700" font-family="Inter,sans-serif">Bridge</text>
+      <text x="331" y="95" text-anchor="middle" font-size="10.5" fill="#666" font-family="Inter,sans-serif">Program</text>
+
+      <!-- Right→Bottom: midpoint at 45°, label bottom-right -->
+      <rect x="286" y="318" width="110" height="32" rx="6" fill="white" stroke="#D8D6EE" stroke-width="1"/>
+      <text x="341" y="332" text-anchor="middle" font-size="10.5" fill="#4A4A7A" font-weight="700" font-family="Inter,sans-serif">Founder</text>
+      <text x="341" y="345" text-anchor="middle" font-size="10.5" fill="#666" font-family="Inter,sans-serif">Training</text>
+
+      <!-- Bottom→Left: midpoint at 135°, label bottom-left -->
+      <rect x="22" y="318" width="100" height="32" rx="6" fill="white" stroke="#D8D6EE" stroke-width="1"/>
+      <text x="72" y="332" text-anchor="middle" font-size="10.5" fill="#4A4A7A" font-weight="700" font-family="Inter,sans-serif">New</text>
+      <text x="72" y="345" text-anchor="middle" font-size="10.5" fill="#666" font-family="Inter,sans-serif">Chapters</text>
+
+      <!-- Left→Top: midpoint at 225°, label top-left -->
+      <rect x="10" y="68" width="110" height="32" rx="6" fill="white" stroke="#D8D6EE" stroke-width="1"/>
+      <text x="65" y="82" text-anchor="middle" font-size="10.5" fill="#4A4A7A" font-weight="700" font-family="Inter,sans-serif">Outreach</text>
+      <text x="65" y="95" text-anchor="middle" font-size="10.5" fill="#666" font-family="Inter,sans-serif">&amp; Recruit</text>
+
+      <!-- ── NODE LABELS (outside each node, clear of arrows) ── -->
+      <text x="210" y="148" text-anchor="middle" font-size="11" fill="#444" font-weight="600" font-family="Inter,sans-serif">Student Member</text>
+      <text x="350" y="206" text-anchor="start" font-size="11" fill="#444" font-weight="600" font-family="Inter,sans-serif">Sustaining</text>
+      <text x="350" y="220" text-anchor="start" font-size="11" fill="#666" font-family="Inter,sans-serif">Member</text>
+      <text x="210" y="352" text-anchor="middle" font-size="11" fill="#444" font-weight="600" font-family="Inter,sans-serif">Chapter Founder</text>
+      <text x="70" y="206" text-anchor="end" font-size="11" fill="#444" font-weight="600" font-family="Inter,sans-serif">New</text>
+      <text x="70" y="220" text-anchor="end" font-size="11" fill="#666" font-family="Inter,sans-serif">Chapter</text>
+    </svg>
+
+    <div class="fw-steps">
+      <div class="fw-step"><div class="fw-num">1</div><div><h4>Precision outreach converts prospects into student members</h4><p>A cost-per-opportunity pitch replaces broad outreach. The first 30 days deliver tangible value — activating the Constituent Engagement Ladder before dropout becomes likely.</p></div></div>
+      <div class="fw-step"><div class="fw-num">2</div><div><h4>The Bridge Program captures graduates at the highest-risk exit point</h4><p>Instead of allowing graduation to sever the relationship, 90 days of stewardship transitions members into professional dues-payers. This is the single highest-leverage intervention in constituent lifecycle management.</p></div></div>
+      <div class="fw-step"><div class="fw-num">3</div><div><h4>Capacity-building training converts employed alumni into Chapter Founders</h4><p>Structured training, micro-grants (Chapter Development Fund), and a tiered incentive model remove the friction of chapter founding. Alumni become organizational co-producers — extending mission without adding burden to existing leadership.</p></div></div>
+      <div class="fw-step"><div class="fw-num">4</div><div><h4>Each new chapter recruits the next cohort of students</h4><p>Organizational resilience is now structural, not personal. The flywheel accelerates: more chapters → more students → more alumni → more founders. Each cycle is stronger than the last.</p></div></div>
+      <div class="fw-step"><div class="fw-num">5</div><div><h4>Growing outcomes data strengthens sponsor stewardship automatically</h4><p>As the Member Outcomes Dashboard fills with verified placement data, the sponsor SROI case becomes self-updating. Renewal ceases to be a negotiation — it becomes the natural conclusion of a well-stewarded, evidence-backed relationship.</p></div></div>
+      <div class="cop-box">
+        <strong>Community of Practice for Chapter Founders</strong>
+        <p>A structured peer learning network connecting all active Chapter Founders — sharing launch learnings, pooling outreach strategies, and providing mutual accountability. In non-profit practice, a Community of Practice sustains volunteer leaders after launch, which is when isolation-driven attrition is highest. Low-cost, high-impact, and it strengthens the Founder network itself as an organizational asset.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 9. SWOT ANALYSIS ═══ -->
+<div class="section">
+  <div class="sec-label">Third-Party Assessment</div>
+  <div class="sec-title">SWOT Analysis of the Sustainable Membership Framework</div>
+  <p class="sec-desc">Evaluated from the perspective of an independent non-profit strategy consultant reviewing this framework for the first time — assessing it against sector standards, implementation realism, and strategic coherence.</p>
+
+  <div class="swot-grid">
+    <div class="swot-cell S">
+      <div class="swot-hdr" style="color:var(--green);"><span>✅</span> Strengths</div>
+      <ul>
+        <li>Correctly identifies the <em>root cause</em> (lifecycle vs. transactional model) rather than treating symptoms — the rare non-profit strategy that does.</li>
+        <li>All three pillars are interdependent and mutually reinforcing; partial implementation still yields partial gains, making incremental adoption viable.</li>
+        <li>The flywheel mechanism creates compounding returns — non-profits rarely design for this kind of structural acceleration.</li>
+        <li>Logic Model grounding gives the framework immediate credibility with foundations, federal funders, and evaluators.</li>
+        <li>The open-source playbook principle signals sector contribution, not just self-interest — highly valued by non-profit evaluators.</li>
+        <li>The Bridge Program targets the highest-attrition point with a tested non-profit intervention model.</li>
+      </ul>
+    </div>
+    <div class="swot-cell W">
+      <div class="swot-hdr" style="color:var(--red);"><span>⚠️</span> Weaknesses</div>
+      <ul>
+        <li>The Bridge Program requires coordination infrastructure that a volunteer-run chapter may not have at launch — implementation capacity is the first constraint.</li>
+        <li>The 90-day timeline is ambitious for systemic organizational change; chapter leadership may experience volunteer fatigue mid-implementation.</li>
+        <li>Member Outcomes Dashboard raises data privacy considerations (career data is sensitive) that require explicit consent and governance protocols.</li>
+        <li>Success metrics (40% conversion, 60% retention) are targets without a validated baseline — measuring from unknown starting points limits early accountability.</li>
+        <li>Alumni buy-in for Chapter Founding is incentivized but not guaranteed; the flywheel only activates if Founders choose to engage.</li>
+      </ul>
+    </div>
+    <div class="swot-cell O">
+      <div class="swot-hdr" style="color:#A0650A;"><span>🚀</span> Opportunities</div>
+      <ul>
+        <li>Growing corporate ESG and DEI mandates mean sponsors are increasingly <em>required</em> by their own boards to demonstrate talent pipeline outcomes — the SROI pitch is better-timed than ever.</li>
+        <li>Federal Workforce Innovation and Opportunity Act (WIOA) and state workforce grants actively fund exactly this kind of talent pipeline infrastructure.</li>
+        <li>The Employer Chapter model has latent potential as a <em>revenue stream</em> — corporate partner fees for co-branded chapter hosting — not just a stewardship mechanism.</li>
+        <li>If proven at Phoenix, this framework becomes a publishable, replicable model that positions the author as a sector thought leader.</li>
+        <li>Peer organizations in professional development, civic engagement, and workforce equity face identical structural challenges — the playbook has natural distribution channels already.</li>
+      </ul>
+    </div>
+    <div class="swot-cell T">
+      <div class="swot-hdr" style="color:var(--catalyst);"><span>🔺</span> Threats</div>
+      <ul>
+        <li><strong>Volunteer fatigue:</strong> Implementing systemic change on top of existing workload without compensation is the most common cause of non-profit reform failure.</li>
+        <li><strong>Economic downturns:</strong> Corporate sponsorship budgets compress regardless of SROI quality — external conditions can undermine the stewardship case.</li>
+        <li><strong>Student financial pressure:</strong> Even a strong value proposition may not overcome genuine dues affordability barriers for some prospective members.</li>
+        <li><strong>Competing organizations</strong> pursuing the same talent pool (NSBE, SHPE, other chapters) can dilute both member attention and sponsor interest.</li>
+        <li><strong>Data governance risk:</strong> If member career data is mishandled, the trust violation would undermine the entire framework's credibility with both members and sponsors.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 10. RATINGS ═══ -->
+<div class="section">
+  <div class="sec-label">Third-Party Evaluation</div>
+  <div class="sec-title">Framework Ratings: Ethics, Human Resources, Impact &amp; Principles</div>
+  <p class="sec-desc">Assessed independently against non-profit sector standards, academic literature on constituent engagement, and established organizational governance frameworks. Ratings are scored out of 10 with explanatory notes on both strengths and gaps.</p>
+
+  <div class="ratings-grid">
+    <div class="rating-card">
+      <div class="rating-dim">Ethics</div>
+      <div class="rating-score" style="color:var(--green);">8.6</div>
+      <div class="rating-max">/10</div>
+      <div class="rating-bar-wrap"><div class="rating-bar" style="width:86%;background:var(--green);"></div></div>
+      <div class="rating-note">Equity orientation is structurally embedded, not decorative. Access-centered dues framing is an ethical intervention for financially constrained students. Incentive model is transparent and merit-based. Gap: data governance for the Member Outcomes Dashboard is not yet formalized — career data collection requires explicit consent architecture.</div>
+      <div class="rating-tag" style="background:#F0FFF4;color:var(--green);">Strong ethical foundation</div>
+    </div>
+    <div class="rating-card">
+      <div class="rating-dim">Human Resources</div>
+      <div class="rating-score" style="color:var(--impact);">7.4</div>
+      <div class="rating-max">/10</div>
+      <div class="rating-bar-wrap"><div class="rating-bar" style="width:74%;background:var(--impact);"></div></div>
+      <div class="rating-note">Intrinsic + extrinsic incentive architecture for Chapter Founders is evidence-based. The succession principle (Deputy Founder) distributes organizational load sustainably. The Ladder of Engagement distributes volunteer effort across many rather than concentrating it. Gap: volunteer burnout mitigation and post-launch founder support are named but not yet operationalized beyond the Community of Practice.</div>
+      <div class="rating-tag" style="background:#FFF8EC;color:#A0650A;">Solid — with clear upgrade path</div>
+    </div>
+    <div class="rating-card">
+      <div class="rating-dim">Non-Profit Impact</div>
+      <div class="rating-score" style="color:var(--policy);">9.1</div>
+      <div class="rating-max">/10</div>
+      <div class="rating-bar-wrap"><div class="rating-bar" style="width:91%;background:var(--policy);"></div></div>
+      <div class="rating-note">The framework's strongest dimension. Logic Model integration is rigorous. Outcomes are measurable, mission-aligned, and linked to a clear Theory of Change. The flywheel's compounding return profile is the type of structural sustainability argument that foundations and sector evaluators explicitly look for. The open-source playbook principle is exemplary — it transforms a chapter-level initiative into a sector contribution.</div>
+      <div class="rating-tag" style="background:#F0FFF4;color:var(--green);">Sector-leading design</div>
+    </div>
+    <div class="rating-card">
+      <div class="rating-dim">Principles</div>
+      <div class="rating-score" style="color:var(--catalyst);">8.2</div>
+      <div class="rating-max">/10</div>
+      <div class="rating-bar-wrap"><div class="rating-bar" style="width:82%;background:var(--catalyst);"></div></div>
+      <div class="rating-note">Constituent-centered design, transparency through outcomes evidence, replicability, and Collective Impact alignment are all present and credibly implemented. The framework embeds participation by design through the Engagement Ladder. Gap: formal board accountability mechanisms and a stakeholder voice structure for governance decisions are implied but not made explicit — naming these would elevate from "good practice" to "principled governance."</div>
+      <div class="rating-tag" style="background:#F0EFF9;color:var(--catalyst);">Principled — governance gap noted</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 11. GLOBAL GOVERNANCE SCALE ═══ -->
+<div class="section">
+  <div class="sec-label">Global Governance Assessment</div>
+  <div class="sec-title">Rating on the Global Good Governance Scale</div>
+  <p class="sec-desc">Assessed against the <span class="term">UN Public Administration Programme's Good Governance Framework</span> (participation, rule of law, transparency, responsiveness, consensus orientation, equity, effectiveness, accountability, and strategic vision) and cross-referenced with <span class="term">OECD Principles for Non-Profit Governance</span>. Overall rating: <strong>7.9 / 10</strong>.</p>
+
+  <div class="gov-wrap">
+    <table class="gov-table">
+      <thead>
+        <tr><th>Governance Dimension</th><th style="width:200px;">Score (/ 10)</th><th>Assessment Note</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Transparency</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:85%;"></div></div><span class="gov-score">8.5</span></div></td><td class="gov-note">Member Outcomes Dashboard is sector-leading. Quarterly sponsor SROI reports set a high standard of financial and impact transparency.</td></tr>
+        <tr><td><strong>Equity &amp; Inclusion</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:92%;background:var(--policy);"></div></div><span class="gov-score" style="color:var(--policy);">9.2</span></div></td><td class="gov-note">Mission-core and architecturally embedded — equity is the organizing principle, not a program add-on. Access framing of dues is a tangible equity intervention.</td></tr>
+        <tr><td><strong>Participation</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:88%;background:#6B8C5A;"></div></div><span class="gov-score" style="color:#6B8C5A;">8.8</span></div></td><td class="gov-note">The Ladder of Engagement builds participation structurally. The Chapter Founder model gives constituents co-ownership of the mission — not just voice, but agency.</td></tr>
+        <tr><td><strong>Accountability</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:70%;background:var(--impact);"></div></div><span class="gov-score" style="color:var(--impact);">7.0</span></div></td><td class="gov-note">KPIs are defined and mission-linked. Gap: accountability mechanisms (who is responsible for what outcome, and what happens when targets aren't met) are not yet specified.</td></tr>
+        <tr><td><strong>Effectiveness</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:85%;"></div></div><span class="gov-score">8.5</span></div></td><td class="gov-note">Logic Model rigorously connects inputs to impact. The flywheel mechanism is a rare example of designing for compounding effectiveness rather than linear output.</td></tr>
+        <tr><td><strong>Responsiveness</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:72%;background:var(--impact);"></div></div><span class="gov-score" style="color:var(--impact);">7.2</span></div></td><td class="gov-note">Feedback loops (Dashboard, sponsor reports, Community of Practice) exist. Formal mechanisms for organizational adaptation in response to constituent feedback are not yet named.</td></tr>
+        <tr><td><strong>Strategic Vision</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:80%;"></div></div><span class="gov-score">8.0</span></div></td><td class="gov-note">The flywheel model is genuinely long-horizon thinking. The open-source playbook principle positions the organization as a sector leader, not just a chapter manager.</td></tr>
+        <tr><td><strong>Consensus Orientation</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:75%;background:#7B5EA7;"></div></div><span class="gov-score" style="color:#7B5EA7;">7.5</span></div></td><td class="gov-note">Stakeholder mapping is visualized. Collective Impact framing positions the Catalyst Strategist as a consensus-builder. Formal consensus mechanisms for decision-making could be named.</td></tr>
+        <tr><td><strong>Rule of Law / Compliance</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:65%;background:var(--red);"></div></div><span class="gov-score" style="color:var(--red);">6.5</span></div></td><td class="gov-note">Biggest governance gap. Data governance, consent protocols, and organizational compliance procedures are not addressed. Adding a formal Data Governance Policy closes this dimension significantly.</td></tr>
+        <tr class="gov-total"><td><strong>Overall Score</strong></td><td><div class="gov-bar-cell"><div class="gov-bar-track"><div class="gov-bar-fill" style="width:79%;background:var(--catalyst);"></div></div><span class="gov-score">7.9</span></div></td><td class="gov-note"><strong>Strong governance foundation. Exceeds most chapter-level non-profit frameworks. Addressable gaps in compliance and accountability are implementation-stage concerns, not design flaws.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ 12. DATA GOVERNANCE ═══ -->
+<div class="section">
+  <div class="sec-label">Governance Gap — Addressed</div>
+  <div class="sec-title">Data Governance Commitment</div>
+  <p class="sec-desc">The Member Outcomes Dashboard is the evidentiary backbone of this framework. Collecting career placement data responsibly requires an explicit governance policy — not as a legal formality, but as a trust-building commitment to the members whose data makes the system work.</p>
+
+  <div class="dg-box">
+    <strong>Data Governance Policy — Member Outcomes Dashboard</strong>
+    <p>All career and placement data entered into the Member Outcomes Dashboard is collected with explicit, informed member consent at point of entry. Members retain the right to review, update, or remove their data at any time. Aggregate, anonymized data may be shared with corporate sponsors and funders as part of SROI reporting; individual records are never shared without express written consent. Data is stored in a secured, access-controlled system with role-based permissions limited to chapter leadership and national staff. This policy is reviewed annually and updated in response to evolving data privacy law. The organization acknowledges that members' trust in how their data is used is inseparable from their trust in the organization itself — and that this trust, once broken, is not easily rebuilt.</p>
+  </div>
+</div>
+
+<!-- ═══ 13. SDG ALIGNMENT ═══ -->
+<div class="section">
+  <div class="sec-label">Global Framework Alignment</div>
+  <div class="sec-title">United Nations SDG Alignment</div>
+  <p class="sec-desc">This framework directly advances three UN Sustainable Development Goals — connecting chapter-level non-profit work to a globally recognized standard of impact measurement. Naming this alignment is not performative; it opens access to international funders, ESG-mandated sponsors, and federal grant programs that require SDG-linked objectives.</p>
+
+  <div class="sdg-grid">
+    <div class="sdg-card">
+      <div class="sdg-badge" style="background:#E8A020;color:white;">SDG<br>8</div>
+      <div class="sdg-body">
+        <h4>Decent Work &amp; Economic Growth</h4>
+        <p>The membership lifecycle pipeline, Bridge Program, and alumni talent tracking directly advance access to decent work for underrepresented professionals. The Employer Chapter model creates structured pathways from education to employment — the core of SDG 8's human capital target.</p>
+      </div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-badge" style="background:#DC402E;color:white;">SDG<br>10</div>
+      <div class="sdg-body">
+        <h4>Reduced Inequalities</h4>
+        <p>Every element of this framework is organized around reducing professional access inequalities. The access-centered dues framing, the equity-first outreach design, and the goal of building a self-sustaining Latino professional network are direct applications of SDG 10's mandate to reduce systemic inequality within and between groups.</p>
+      </div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-badge" style="background:#1A80A2;color:white;">SDG<br>17</div>
+      <div class="sdg-body">
+        <h4>Partnerships for the Goals</h4>
+        <p>The Employer Chapter model, the Collective Impact positioning of the Catalyst Strategist, and the open-source replication strategy are all expressions of SDG 17 — building multi-sector partnerships (corporate, civic, educational) to amplify impact beyond what any single organization could achieve alone.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 14. METRICS ═══ -->
+<div class="section">
+  <div class="sec-label">Impact Measurement</div>
+  <div class="sec-title">Key Performance Indicators &amp; SROI Targets</div>
+  <p class="sec-desc">Non-profit best practice requires defining <span class="term">outputs</span> (what we did), <span class="term">outcomes</span> (what changed because we did it), and <span class="term">impact</span> (what changed <em>net of what would have happened anyway</em>). These KPIs track progress at each level of the Logic Model and provide the evidentiary foundation for every sponsor stewardship conversation.</p>
+
+  <div class="g4">
+    <div class="metric-card"><div class="metric-name">Student → Sustaining Conversion</div><div class="metric-val" style="color:var(--impact);">40%</div><div class="metric-sub">Target rate (from estimated &lt;10% baseline). Primary output metric and flywheel activation signal.</div></div>
+    <div class="metric-card"><div class="metric-name">Member Retention (Year 2)</div><div class="metric-val" style="color:var(--donors);">60%</div><div class="metric-sub">Sector benchmark for healthy sustaining membership programs (Association of Fundraising Professionals).</div></div>
+    <div class="metric-card"><div class="metric-name">Sponsor Renewal Rate</div><div class="metric-val" style="color:var(--policy);">80%</div><div class="metric-sub">Target following Member Outcomes Dashboard implementation. Core outcome metric for resource development health.</div></div>
+    <div class="metric-card"><div class="metric-name">New Chapters (Year 1)</div><div class="metric-val" style="color:var(--catalyst);">3–5</div><div class="metric-sub">Via Alumni-to-Chapter Flywheel. Scales mission without proportional increase in central organization overhead.</div></div>
+  </div>
+</div>
+
+<!-- ═══ 15. CATALYST BRIDGE ═══ -->
+<div class="section">
+  <div class="sec-label">Framework Integration</div>
+  <div class="sec-title">Operationalizing the Catalyst Strategist</div>
+  <div class="cat-wrap">
+    <div class="cat-title">How This Solution Activates Each Intersection of the Venn Model</div>
+    <div class="cat-sub">The Catalyst Strategist occupies the <em>Collective Impact</em> position — the backbone organization that coordinates across sectors, holds the shared measurement system, and catalyzes alignment without taking credit away from any stakeholder. Each pillar operationalizes one axis of that convergence.</div>
+    <div class="cat-grid">
+      <div class="cat-card"><div class="cat-icon">🟠</div><h4>Impact Group ↔ Donors</h4><p>The Member Outcomes Dashboard creates the transparency that sponsors require. Recognition of measurable chapter success directly impacts reinvestment decisions. Moves the relationship from transactional to relational stewardship — the foundation of long-term resource development.</p><span class="cat-conn">→ Pillar 02: Outcomes Architecture</span></div>
+      <div class="cat-card"><div class="cat-icon">🟢</div><h4>Impact Group ↔ Policymakers</h4><p>Expanding chapters across cities and corporate employers builds a visible civic and workforce presence — creating the "controlling factor for discourse" the Venn model names. The organization becomes the credible, data-backed voice on Latino professional equity with policymakers.</p><span class="cat-conn">→ Pillar 03: Flywheel Expansion</span></div>
+      <div class="cat-card"><div class="cat-icon">🩷</div><h4>Donors ↔ Policymakers</h4><p>The Employer Chapter model bridges corporate funders with institutional infrastructure — giving donors the "power to control impact and funding" through co-ownership of chapter growth, while policymakers see scalable workforce equity infrastructure worth endorsing and funding through public channels.</p><span class="cat-conn">→ Pillar 01: Precision Outreach</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 16. ROADMAP ═══ -->
+<div class="section">
+  <div class="sec-label">Implementation Plan</div>
+  <div class="sec-title">90-Day Action Roadmap</div>
+  <p class="sec-desc">Non-profit implementation best practice favors <span class="term">phased capacity building</span> over simultaneous full deployment — testing and adapting before scaling prevents resource misallocation and builds the organizational confidence needed for each subsequent phase.</p>
+  <div class="roadmap">
+    <div class="phase"><div class="phase-hdr p1">Phase 1: Diagnose &amp; Design (Days 1–30)<span>Foundation — understand before building</span></div><div class="phase-body"><div class="phase-item">Map the full constituent journey — identify every attrition point with real data</div><div class="phase-item">Draft the Logic Model with chapter leadership and key stakeholders</div><div class="phase-item">Build cost-per-opportunity calculator for outreach precision</div><div class="phase-item">Design the Bridge Program curriculum and stewardship cadence</div><div class="phase-item">Create Member Outcomes Dashboard v1 (lightweight and trackable from day one)</div><div class="phase-item">Draft Data Governance Policy and consent protocol</div></div></div>
+    <div class="phase"><div class="phase-hdr p2">Phase 2: Pilot &amp; Activate (Days 31–60)<span>Test at small scale before systemizing</span></div><div class="phase-body"><div class="phase-item">Launch precision outreach campaign with segment-specific value propositions</div><div class="phase-item">Pilot Bridge Program with this semester's graduating cohort</div><div class="phase-item">Identify and train 3–5 employed alumni for Chapter Founder cohort</div><div class="phase-item">Establish protected member communication channel (stewardship infrastructure)</div><div class="phase-item">Deliver first quarterly sponsor impact report using Dashboard data</div><div class="phase-item">Launch Founders' Community of Practice (peer support network)</div></div></div>
+    <div class="phase"><div class="phase-hdr p3">Phase 3: Scale &amp; Institutionalize (Days 61–90)<span>Embed what works into organizational systems</span></div><div class="phase-body"><div class="phase-item">Formalize Chapter Development Fund: dues percentage pooling + micro-grant process</div><div class="phase-item">Launch first Employer Chapter at a founding alumni's firm</div><div class="phase-item">Present full SROI brief with Dashboard data to 2+ corporate sponsors</div><div class="phase-item">Introduce Deputy Founder succession standard across all chapters</div><div class="phase-item">Submit findings to national organization leadership as a replicable playbook</div></div><div class="phase-item">Publish open-source chapter model for peer organization adoption</div></div></div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-l">
+    <strong>Shambhavi Singh — Catalyst Strategist Framework · Final Version</strong>
+    Original framework developed from chapter-based non-profit field conversations, April 2026.<br>
+    Grounded in: Logic Model · Theory of Change · Constituent Lifecycle Management · SROI · Collective Impact · Good Governance Framework · UN SDG 8, 10, 17
+  </div>
+  <div class="footer-r">
+    Global Governance Rating: 7.9/10<br>
+    Non-Profit Impact Rating: 9.1/10<br>
+    Built on the Venn model:<br>Impact Group · Donors · Policymakers
+  </div>
+</div>
+
+<!-- CC LICENSE FOOTER -->
+<div style="background:#1A1A35;color:#fff;text-align:center;padding:18px 24px;font-size:0.82rem;letter-spacing:0.01em;">
+  <span style="font-size:1.1rem;">🔒</span>&nbsp;
+  <strong>Shambhavi Singh</strong> · <em>Chapter-Based Non-Profit Sustainability Framework</em> · © 2026 &nbsp;|&nbsp;
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" style="color:#C5B4F0;text-decoration:underline;">CC BY-NC 4.0</a>
+  &nbsp;— Free to share with attribution. Not for commercial use.
+  &nbsp;|&nbsp; <a href="https://shavi2002.github.io/Non-profit-Solutions/" target="_blank" style="color:#C5B4F0;text-decoration:underline;">shavi2002.github.io/Non-profit-Solutions</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shambhavi Singh — Non-Profit Systems Thinking & Instructional Design</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#1A1A35; --navy2:#242448; --purple:#4A4A7A;
+  --amber:#E8A840; --pink:#E0578C; --green:#5A8C6B; --blue:#4A7AB5;
+  --bg:#F4F4F8; --card:#FFFFFF; --border:#E0E0EC;
+  --text:#1A1A2E; --muted:#666680;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,26,53,0.97);backdrop-filter:blur(10px);padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-size:13px;font-weight:700;color:white;letter-spacing:.5px;}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:24px;}
+.nav-links a{font-size:12px;color:rgba(255,255,255,0.65);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:white;}
+.nav-cta{background:var(--amber);color:var(--navy);border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#2E2E5A 60%,#3A2A5A 100%);display:flex;align-items:center;padding:80px 40px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:rgba(232,168,64,0.04);}
+.hero::after{content:'';position:absolute;bottom:-80px;left:10%;width:300px;height:300px;border-radius:50%;background:rgba(224,87,140,0.04);}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 380px;gap:60px;align-items:center;}
+.hero-eyebrow{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:14px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:44px;line-height:1.18;color:white;margin-bottom:16px;}
+.hero h1 em{color:var(--amber);font-style:normal;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.68);line-height:1.75;max-width:520px;margin-bottom:28px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.hero-tag{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:5px 13px;font-size:11.5px;color:rgba(255,255,255,0.75);}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{background:var(--amber);color:var(--navy);border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-primary:hover{opacity:.9;}
+.btn-secondary{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-secondary:hover{border-color:white;}
+
+/* QR PANEL */
+.qr-panel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:28px;text-align:center;}
+.qr-box{background:white;border-radius:12px;padding:16px;display:inline-block;margin-bottom:14px;}
+.qr-box img{display:block;}
+.qr-label{font-size:12.5px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.qr-label strong{display:block;color:white;margin-bottom:4px;font-size:13px;}
+.qr-url{font-size:10.5px;color:var(--amber);margin-top:8px;word-break:break-all;}
+
+/* SECTION BASE */
+.section{padding:80px 40px;}
+.section-inner{max-width:1100px;margin:0 auto;}
+.sec-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:8px;}
+.sec-desc{font-size:14px;color:var(--muted);max-width:680px;line-height:1.75;margin-bottom:36px;}
+
+/* WORK CARDS */
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.work-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .2s;}
+.work-card:hover{box-shadow:0 8px 32px rgba(74,74,122,0.14);transform:translateY(-2px);}
+.work-card-header{padding:28px 28px 20px;}
+.wch-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.work-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.work-badge{font-size:10.5px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.wb-live{background:#EEFAF2;color:var(--green);}
+.wb-proto{background:#EEF5FF;color:var(--blue);}
+.work-card h3{font-size:20px;font-weight:700;margin-bottom:6px;}
+.work-card p{font-size:13px;color:var(--muted);line-height:1.65;}
+.work-card-body{padding:0 28px 20px;}
+.work-features{list-style:none;margin-bottom:16px;}
+.work-features li{font-size:12.5px;color:var(--muted);padding:5px 0;display:flex;gap:8px;align-items:flex-start;border-bottom:1px solid var(--border);}
+.work-features li:last-child{border-bottom:none;}
+.work-features li::before{content:'→';color:#CCC;flex-shrink:0;margin-top:1px;}
+.work-card-footer{padding:16px 28px 24px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.wf-tag{display:inline-block;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--bg);border:1px solid var(--border);color:var(--muted);}
+.card-link{display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:var(--purple);color:white;border:none;border-radius:7px;padding:9px 18px;font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;}
+.card-link:hover{background:var(--navy);}
+.card-link-secondary{background:transparent;color:var(--purple);border:1.5px solid var(--purple);}
+.card-link-secondary:hover{background:var(--purple);color:white;}
+
+/* STRIPE DIVIDER */
+.stripe{height:4px;background:linear-gradient(90deg,var(--amber),var(--pink),var(--green),var(--blue));opacity:.6;}
+
+/* FRAMEWORK PILLARS */
+.pillars-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.pillar-mini{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
+.pillar-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.pm1::before{background:var(--amber);}
+.pm2::before{background:var(--pink);}
+.pm3::before{background:var(--green);}
+.pillar-mini h4{font-size:14px;font-weight:700;margin-bottom:5px;}
+.pillar-mini p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* GOVERNANCE ROW */
+.gov-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px;}
+.gov-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.gov-val{font-size:28px;font-weight:800;color:var(--purple);}
+.gov-lbl{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+/* COURSE MODULES */
+.modules-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.mod-mini{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.mod-mini .mm-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.mod-mini h4{font-size:13px;font-weight:700;margin-bottom:3px;}
+.mod-mini p{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+/* ADDIE ROW */
+.addie-row{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:20px;}
+.addie-step{flex:1;padding:16px;border-right:1px dashed var(--border);text-align:center;}
+.addie-step:last-child{border-right:none;}
+.as-letter{font-size:22px;font-weight:800;margin-bottom:3px;}
+.as-word{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.as-desc{font-size:11px;color:var(--muted);line-height:1.45;}
+
+/* COLLABORATION */
+.collab-section{background:linear-gradient(135deg,var(--navy) 0%,#2E2E5A 100%);padding:80px 40px;}
+.collab-inner{max-width:1100px;margin:0 auto;}
+.collab-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:32px;}
+.collab-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:22px;}
+.collab-icon{font-size:24px;margin-bottom:10px;}
+.collab-card h4{font-size:15px;font-weight:700;color:white;margin-bottom:6px;}
+.collab-card p{font-size:12.5px;color:rgba(255,255,255,0.65);line-height:1.65;}
+.collab-tag{display:inline-block;margin-top:10px;font-size:11px;background:rgba(232,168,64,0.15);border:1px solid rgba(232,168,64,0.3);border-radius:6px;padding:3px 9px;color:var(--amber);}
+
+/* CONTACT */
+.contact-section{padding:80px 40px;background:var(--card);}
+.contact-inner{max-width:700px;margin:0 auto;text-align:center;}
+.contact-inner h2{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:10px;}
+.contact-inner p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:28px;}
+.contact-email{display:inline-flex;align-items:center;gap:10px;background:var(--purple);color:white;border-radius:10px;padding:14px 28px;font-size:14px;font-weight:700;text-decoration:none;}
+.contact-email:hover{background:var(--navy);}
+.contact-links{display:flex;justify-content:center;gap:16px;margin-top:20px;}
+.contact-link{font-size:13px;color:var(--purple);text-decoration:none;font-weight:500;}
+.contact-link:hover{text-decoration:underline;}
+
+/* IP FOOTER */
+.ip-footer{background:var(--navy);color:rgba(255,255,255,0.5);padding:28px 40px;text-align:center;font-size:12px;line-height:1.8;}
+.ip-footer strong{color:rgba(255,255,255,0.8);}
+.ip-footer a{color:var(--amber);text-decoration:none;}
+
+/* SDG CHIPS */
+.sdg-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.sdg-chip{border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:700;color:white;}
+
+@media(max-width:860px){
+  .hero-inner{grid-template-columns:1fr;}
+  .qr-panel{display:none;}
+  .work-grid,.pillars-row,.collab-grid,.modules-row{grid-template-columns:1fr;}
+  .gov-row{grid-template-columns:1fr 1fr;}
+  .addie-row{flex-direction:column;}
+  .addie-step{border-right:none;border-bottom:1px dashed var(--border);}
+  nav{padding:0 20px;}
+  .hero{padding:80px 20px 60px;}
+  .section,.contact-section,.collab-section{padding:60px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>◆</span> Shambhavi Singh</div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#framework">Framework</a>
+    <a href="#course">Certification</a>
+    <a href="#collaborate">Collaborate</a>
+  </div>
+  <a href="mailto:ssing382@asu.edu" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Non-Profit Systems Thinking · Instructional Design</div>
+      <h1>Building Systems<br>That <em>Outlast</em><br>the People in Them.</h1>
+      <p class="hero-sub">I research, design, and publish open frameworks for chapter-based non-profits navigating sustainability gaps — and the training programs that help them close those gaps. My work lives at the intersection of organizational strategy, instructional design, and equity.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Logic Model · Theory of Change</span>
+        <span class="hero-tag">ADDIE · Bloom's Taxonomy · Kirkpatrick</span>
+        <span class="hero-tag">SROI · Constituent Lifecycle Management</span>
+        <span class="hero-tag">Global Governance Rated: 7.9/10</span>
+        <span class="hero-tag">SDG 8 · SDG 10 · SDG 17</span>
+      </div>
+      <div class="hero-btns">
+        <a href="#work" class="btn-primary">See the Work</a>
+        <a href="#collaborate" class="btn-secondary">Collaborate with Me</a>
+      </div>
+    </div>
+    <div class="qr-panel">
+      <div class="qr-box">
+        <!-- QR code generated via Google Charts API — links to GitHub Pages framework -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://shavi2002.github.io/Non-profit-Solutions/&color=1A1A35&bgcolor=FFFFFF" width="180" height="180" alt="QR Code to Non-Profit Solutions Framework"/>
+      </div>
+      <div class="qr-label">
+        <strong>Scan to explore the framework</strong>
+        Directly access the full published strategy document on any device.
+      </div>
+      <div class="qr-url">shavi2002.github.io/Non-profit-Solutions/</div>
+    </div>
+  </div>
+</div>
+
+<div class="stripe"></div>
+
+<!-- WORK SECTION -->
+<div class="section" id="work">
+  <div class="section-inner">
+    <div class="sec-eyebrow">Published Work</div>
+    <div class="sec-title">Two Pieces. One Complete System.</div>
+    <p class="sec-desc">The Strategy Framework maps structural sustainability gaps and designs pathways to close them. The Certification Course trains people to implement those pathways. Together they form a full-stack response to chapter-based non-profit sustainability — research-backed, freely accessible, and designed to replicate.</p>
+
+    <div class="work-grid">
+
+      <!-- CARD 1: FRAMEWORK -->
+      <div class="work-card">
+        <div class="work-card-header">
+          <div class="wch-top">
+            <div class="work-num">Work 01 · Strategy Framework</div>
+            <span class="work-badge wb-live">● Live</span>
+          </div>
+          <h3>The Sustainable Membership Engine</h3>
+          <p>A fully evidence-backed organizational strategy framework for chapter-based non-profits experiencing member attrition, sponsor trust deficits, and structural fragility — with a third-party SWOT, governance rating, and SDG alignment built in.</p>
+        </div>
+        <div class="work-card-body">
+          <ul class="work-features">
+            <li>Three-point sustainability diagnostic grounded in systems thinking (Senge, 1990)</li>
+            <li>Logic Model connecting inputs to mission-level impact</li>
+            <li>Constituent Lifecycle Pipeline with engineered conversion triggers</li>
+            <li>Third-party SWOT analysis and Global Governance Scale rating (7.9/10)</li>
+            <li>Stakeholder Power-Interest Map and SROI sponsor stewardship model</li>
+            <li>UN SDG 8, 10, 17 alignment with Data Governance Policy</li>
+            <li>90-day phased implementation roadmap</li>
+          </ul>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="alpfa_solution_framework.html" target="_blank" class="card-link">View Live Framework →</a>
+            <a href="shambhavi_singh_nonprofit_framework.pdf" target="_blank" class="card-link" style="background:rgba(232,168,64,0.12);border-color:var(--amber);color:var(--amber);">⬇ Download PDF →</a>
+          </div>
+        </div>
+        <div class="work-card-footer">
+          <span class="wf-tag">Logic Model</span>
+          <span class="wf-tag">Theory of Change</span>
+          <span class="wf-tag">SROI</span>
+          <span class="wf-tag">Collective Impact</span>
+          <span class="wf-tag">Governance Framework</span>
+        </div>
+      </div>
+
+      <!-- CARD 2: COURSE -->
+      <div class="work-card">
+        <div class="work-card-header">
+          <div class="wch-top">
+            <div class="work-num">Work 02 · Instructional Design</div>
+            <span class="work-badge wb-proto">◈ Prototype</span>
+          </div>
+          <h3>Chapter Founder Certification</h3>
+          <p>A self-paced LMS prototype structured on the ADDIE instructional design framework — training employed non-profit alumni to open new chapters, sustain them through succession, and eventually train the next cohort of founders. The course is its own flywheel.</p>
+        </div>
+        <div class="work-card-body">
+          <ul class="work-features">
+            <li>7 modules mapped to ADDIE phases: Analysis → Design → Development → Implementation → Evaluation</li>
+            <li>Learning objectives written using Bloom's Taxonomy cognitive hierarchy</li>
+            <li>Kirkpatrick Level 4 evaluation: Reaction · Learning · Behavior · Results</li>
+            <li>Interactive quizzes, reflection prompts, team exercises, and printable templates</li>
+            <li>Module 7 Capstone: Train-the-Trainer fractal loop design</li>
+            <li>10 peer-reviewed citations across learning science and non-profit research</li>
+          </ul>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="chapter_founder_certification.html" target="_blank" class="card-link">Open Course Prototype →</a>
+          </div>
+        </div>
+        <div class="work-card-footer">
+          <span class="wf-tag">ADDIE</span>
+          <span class="wf-tag">Bloom's Taxonomy</span>
+          <span class="wf-tag">Kirkpatrick Model</span>
+          <span class="wf-tag">Andragogy</span>
+          <span class="wf-tag">Communities of Practice</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FRAMEWORK OVERVIEW -->
+<div class="section" id="framework" style="background:var(--card);padding-top:60px;padding-bottom:60px;">
+  <div class="section-inner">
+    <div class="sec-eyebrow">Framework at a Glance</div>
+    <div class="sec-title">Three Pillars. One Root Cause. One Flywheel.</div>
+    <p class="sec-desc">Every element of the framework traces back to a single diagnosis: chapter-based non-profits treat membership as a transactional event rather than a relational lifecycle. The three pillars redesign the system around lifecycle logic.</p>
+
+    <div class="pillars-row">
+      <div class="pillar-mini pm1">
+        <h4>Pillar 01 — Precision Outreach</h4>
+        <p>Segment-specific value propositions, cost-per-opportunity framing, and protected communication infrastructure. Outreach that speaks to each constituent's actual goals, not the organization's talking points.</p>
+      </div>
+      <div class="pillar-mini pm2">
+        <h4>Pillar 02 — Sustainable Membership Architecture</h4>
+        <p>The Bridge Program, tiered value ladder, and Member Outcomes Dashboard. Converts the highest-attrition transition point (graduation) into a membership-deepening moment, not an exit event.</p>
+      </div>
+      <div class="pillar-mini pm3">
+        <h4>Pillar 03 — Alumni-to-Chapter Flywheel</h4>
+        <p>Capacity-building training, Chapter Development Fund micro-grants, and the succession principle. Employed alumni become organizational co-producers — extending the mission without adding burden to existing leadership.</p>
+      </div>
+    </div>
+
+    <div class="gov-row">
+      <div class="gov-stat"><div class="gov-val">9.1</div><div class="gov-lbl">Non-Profit Impact Rating /10</div></div>
+      <div class="gov-stat"><div class="gov-val">7.9</div><div class="gov-lbl">Global Governance Scale /10 (UN Framework)</div></div>
+      <div class="gov-stat"><div class="gov-val">8.6</div><div class="gov-lbl">Ethics Rating /10</div></div>
+      <div class="gov-stat"><div class="gov-val">10</div><div class="gov-lbl">Research Citations Across Both Works</div></div>
+    </div>
+
+    <div class="sdg-chips">
+      <div class="sdg-chip" style="background:#E8A020;">SDG 8 — Decent Work &amp; Economic Growth</div>
+      <div class="sdg-chip" style="background:#DC402E;">SDG 10 — Reduced Inequalities</div>
+      <div class="sdg-chip" style="background:#1A80A2;">SDG 17 — Partnerships for the Goals</div>
+    </div>
+  </div>
+</div>
+
+<!-- COURSE OVERVIEW -->
+<div class="section" id="course" style="padding-top:60px;padding-bottom:60px;">
+  <div class="section-inner">
+    <div class="sec-eyebrow">Certification Course</div>
+    <div class="sec-title">7 Modules. A Fractal Loop. A System That Teaches Itself.</div>
+    <p class="sec-desc">The Chapter Founder Certification trains participants to build chapters, sustain them past their own departure, and train the next founder — so every completion of the course seeds the next one.</p>
+
+    <div class="modules-row">
+      <div class="mod-mini"><div class="mm-num">Module 01</div><h4>The Sustainability Gap</h4><p>Systems thinking diagnostic. Identify root cause vs. symptom.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 02</div><h4>Stakeholder Landscape</h4><p>Power-interest mapping. Salience theory. Engagement strategies.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 03</div><h4>Constituent Pipeline</h4><p>Ladder of Engagement. Conversion trigger design.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 04</div><h4>First 30 Days</h4><p>Value proposition matrix. Precision outreach. Communication infrastructure.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 05</div><h4>Sustaining the Chapter</h4><p>Bridge Program. Succession principle. Flywheel activation.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 06</div><h4>Sponsor SROI Case</h4><p>Stewardship cycle. Member Outcomes Dashboard. Quarterly impact reporting.</p></div>
+      <div class="mod-mini"><div class="mm-num">Module 07</div><h4>Train the Trainer</h4><p>Kirkpatrick Level 4. Fractal curriculum design. The loop activates.</p></div>
+      <div class="mod-mini" style="background:linear-gradient(135deg,#F0EFF9,#F8F8FF);border-color:#D8D6EE;"><div class="mm-num" style="color:var(--purple);">Capstone</div><h4 style="color:var(--purple);">Chapter Founder Certified</h4><p style="color:var(--purple);">Design your own onboarding curriculum. Extend the ladder for the next cohort.</p></div>
+    </div>
+
+    <div class="addie-row">
+      <div class="addie-step"><div class="as-letter" style="color:var(--blue);">A</div><div class="as-word" style="color:var(--blue);">Analysis</div><div class="as-desc">What do founders actually need? Built from field research and organizational pain points.</div></div>
+      <div class="addie-step"><div class="as-letter" style="color:var(--amber);">D</div><div class="as-word" style="color:var(--amber);">Design</div><div class="as-desc">Bloom's Taxonomy objectives. Each module builds toward the capstone.</div></div>
+      <div class="addie-step"><div class="as-letter" style="color:var(--pink);">D</div><div class="as-word" style="color:var(--pink);">Development</div><div class="as-desc">Grounded in 10 peer-reviewed sources across learning science and non-profit research.</div></div>
+      <div class="addie-step"><div class="as-letter" style="color:var(--green);">I</div><div class="as-word" style="color:var(--green);">Implementation</div><div class="as-desc">Quizzes, reflection prompts, team exercises, and downloadable templates in every module.</div></div>
+      <div class="addie-step"><div class="as-letter" style="color:var(--purple);">E</div><div class="as-word" style="color:var(--purple);">Evaluation</div><div class="as-desc">Kirkpatrick Levels 1–4: Reaction · Learning · Behavior · Organizational Results.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- COLLABORATION -->
+<div class="collab-section" id="collaborate">
+  <div class="collab-inner">
+    <div class="sec-eyebrow" style="color:rgba(255,255,255,0.4);">Open to Collaboration</div>
+    <div class="sec-title" style="color:white;">This Work Is Looking for a<br>First Implementation Partner.</div>
+    <p class="sec-desc" style="color:rgba(255,255,255,0.65);">The framework is theoretically grounded and ready to pilot. I am actively seeking organizations to be the first implementation partners — to test, adapt, and improve this work in a real chapter context. The goal is mutual: your organization gets a structured, evidence-backed sustainability intervention. I get empirical data that validates and strengthens the research.</p>
+
+    <div class="collab-grid">
+      <div class="collab-card">
+        <div class="collab-icon">🔬</div>
+        <h4>Pilot Partnership</h4>
+        <p>Run the Chapter Founder Certification with a cohort of your alumni. Measure conversion rates before and after. Co-author findings. This is the implementation partnership that turns theory into evidence.</p>
+        <span class="collab-tag">Ideal for: Chapter-based professional orgs</span>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">📚</div>
+        <h4>Curriculum Collaboration</h4>
+        <p>Integrate the framework or course into your existing member training, leadership development, or onboarding programs. I can adapt the content to your organizational context and co-design the delivery format.</p>
+        <span class="collab-tag">Ideal for: Non-profit training programs</span>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">🔍</div>
+        <h4>Research Partnership</h4>
+        <p>I am seeking academic or practitioner research partners to co-investigate constituent lifecycle management in chapter-based non-profits. The framework is the hypothesis. Implementation data is what we build together.</p>
+        <span class="collab-tag">Ideal for: Universities, think tanks, foundations</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="contact-section">
+  <div class="contact-inner">
+    <div class="sec-eyebrow" style="text-align:center;">Contact</div>
+    <h2>Let's Build Something That Lasts.</h2>
+    <p>Whether you want to pilot the framework, partner on research, feature this work in your publications, or simply have a conversation about what you're seeing in your own organization — I want to hear from you.</p>
+    <a href="mailto:ssing382@asu.edu" class="contact-email">✉ ssing382@asu.edu</a>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/shambhavi-singh2002" target="_blank" class="contact-link">LinkedIn →</a>
+      <a href="alpfa_solution_framework.html" target="_blank" class="contact-link">Strategy Framework →</a>
+      <a href="chapter_founder_certification.html" target="_blank" class="contact-link">Certification Course →</a>
+    </div>
+  </div>
+</div>
+
+<!-- IP FOOTER -->
+<div class="ip-footer">
+  <div>
+    <strong>© 2026 Shambhavi Singh. All original frameworks, instructional designs, and written content on this site are the intellectual property of Shambhavi Singh.</strong>
+  </div>
+  <div style="margin-top:6px;">
+    This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)</a>.<br>
+    You may share and adapt this work for non-commercial purposes with attribution. Commercial use requires explicit written permission from the author.
+  </div>
+  <div style="margin-top:8px;opacity:.6;">
+    Arizona State University · Non-Profit Strategy &amp; Instructional Design · April 2026
+  </div>
+</div>
+
+</body>
+</html>
